@@ -1,44 +1,43 @@
+{-# LANGUAGE OverloadedStrings #-}
 module Day5 (day5) where
 
 import MyLib
-import Data.List
-import Data.List.Split
-import Data.Function
+import Data.Digest.Pure.MD5
+import Data.ByteString.Lazy (ByteString)
+import Data.String (fromString)
+import Data.List (isPrefixOf, delete)
+import Data.Char (digitToInt)
+import Debug.Trace
 
-threeVowels :: String -> Bool
-threeVowels = (>= 3) . length . filter (`elem` "aeiou")
+input :: ByteString
+input = "cxdnnyjw"
+-- input = "abc"
 
-repeatChar :: String -> Bool
-repeatChar [] = False
-repeatChar [_] = False
-repeatChar (x : y : xs) = x == y || repeatChar (y : xs)
+inputList :: [ByteString]
+inputList = map ((input <>) . fromString . show)  [0..]
 
-disallowedStrings :: [String]
-disallowedStrings = ["ab", "cd", "pq", "xy"]
+hashList :: [String]
+hashList = map (show . md5) inputList
 
-noDisallowed :: String -> Bool
-noDisallowed s = not $ any (`isInfixOf` s) disallowedStrings
+has5Zero :: [String]
+has5Zero = filter ("00000" `isPrefixOf`) hashList
 
-isNice :: String -> Bool
-isNice = (`all` [threeVowels, repeatChar, noDisallowed]) . (&)
+take8NonZero :: String
+take8NonZero = map (!! 5) $ take 8 has5Zero
 
-isSymmetrical :: String -> Bool
-isSymmetrical = reverse >>= (==)
-
-hasSymmetrics :: String -> Bool
-hasSymmetrics = any isSymmetrical . divvy 3 1
-
-hasRepeatPair :: String -> Bool
-hasRepeatPair s = let
-  s2 = divvy 2 1 s
-  f [] = False
-  f [x] = False
-  f [x, y] = False
-  f (x : y : xs) = x `elem` xs || f (y : xs)
-  in f s2
+buildPW :: String -> String -> [String] -> String
+buildPW temp seen (x : xs)
+  | trace (temp ++ ',' : seen) False = undefined
+  | null seen =  temp
+  | pos `notElem` seen = buildPW temp seen xs
+  | otherwise = buildPW temp' seen' xs
+  where
+    pos = x !! 5
+    pos' = digitToInt pos
+    seen' = delete pos seen
+    temp' = take pos' temp ++ (x !! 6) : drop (pos' + 1) temp
 
 day5 :: IO ()
 day5 = do
-  input <- lines <$> readFile "input5.txt"
-  putStrLn ("day5a: " ++ show (length $ filter isNice input))
-  putStrLn ("day5b: " ++ show (length $ filter ((&&) <$> hasSymmetrics <*> hasRepeatPair) input))
+  -- putStrLn $ "day5a: " ++ take8NonZero
+  putStrLn $ "day5b: " ++ buildPW "xxxxxxxx" "01234567" has5Zero

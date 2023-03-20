@@ -1,26 +1,60 @@
-{-# LANGUAGE OverloadedStrings #-}
-
 module Day4 (day4) where
 
+import Data.List.Split
 import Data.List
-import Data.Hash.MD5
+import Data.Function
+import Debug.Trace
 
-input :: String
-input = "bgvyzdsv"
+data Password = P { strings :: [String], secId :: Int, checksum :: String }
+  deriving (Show, Eq, Ord)
 
-prefix :: String
-prefix = "00000"
+testInput = map parseInput
+  [ "aaaaa-bbb-z-y-x-123[abxyz]"
+  , "a-b-c-d-e-f-g-h-987[abcde]"
+  , "not-a-real-room-404[oarel]"
+  , "totally-real-room-200[decoy]"
+  ]
+parseInput :: String -> Password
+parseInput l = P st nu ch
+  where
+    xs = splitOn "-" l
+    st = init xs
+    [y, z] = splitOn "[" $ last xs
+    nu = read y 
+    ch = init z
 
-prefix' :: String
-prefix' = "000000"
+check :: Password -> Bool
+check (P st si ch) = ch == ch'
+-- check (P st si ch) = trace (show (st''', ch, ch == ch')) ch == ch'
+  where
+    ch' =
+      take 5 $
+      map snd st'
+    st' = 
+      sortBy ( \x y ->
+                  (compare `on` fst) y x <> (compare `on` snd) x y
+             ) st'''
+    st''' = map (\x -> (length x, head x)) st''
+    st'' = 
+      group $
+      sort $
+      concat st
 
-day4a :: String -> Int
-day4a s = head $ dropWhile (not . (prefix `isPrefixOf`) . md5s . Str . (s ++) . show) [0..] 
-
-day4b :: String -> Int
-day4b s = head $ dropWhile (not . (prefix' `isPrefixOf`) . md5s . Str . (s ++) . show) [0..] 
+decrypt :: Password -> Password
+decrypt (P st nu ch) = P st' nu ch
+  where
+    st' = map f st
+    m = nu `mod` 26
+    f = map (toEnum . (+ 97) . (`mod` 26) . (+ m) . subtract 97 . fromEnum)
 
 day4 :: IO ()
 day4 = do
-  putStrLn ("day4a: " ++ show (day4a input))
-  putStrLn ("day4b: " ++ show (day4b input))
+  input <- filter check . map parseInput . lines <$> readFile "input4.txt"
+  -- putStrLn ("day4a: " ++ show (sum $ map secId $ filter check testInput))
+  putStrLn ("day4a: " ++ show (sum $ map secId input))
+  putStrLn ("day4b: " ++ show ( secId
+                              $ head
+                              $ filter ((\x -> all ($ x) [ elem "northpole"
+                                                         , elem "object"
+                                                         , elem "storage"
+                                                         ]) . strings) $ map decrypt input))

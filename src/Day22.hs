@@ -1,7 +1,7 @@
 {-# LANGUAGE LambdaCase #-}
 module Day22 (day22) where
 
-import MyLib
+import MyLib hiding (Nat(..))
 import GHC.TypeLits (Symbol)
 import Control.Monad (guard)
 import Data.List (foldl', insert)

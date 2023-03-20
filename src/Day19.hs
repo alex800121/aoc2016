@@ -2,7 +2,7 @@
 {-# LANGUAGE FlexibleInstances #-}
 module Day19 (day19) where
 
-import MyLib
+import MyLib hiding (Nat (..))
 import Data.List.Split
 import Data.List
 import Data.Map (Map)

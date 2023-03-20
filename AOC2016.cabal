@@ -1,4 +1,4 @@
-cabal-version:      2.4
+cabal-version:      3.0
 name:               AOC2016
 version:            0.1.0.0
 
@@ -24,17 +24,18 @@ extra-source-files: CHANGELOG.md
 common shared
     default-language: Haskell2010
     build-depends:
-        base,
+        base >= 4.17.0.0,
         megaparsec,
         parser-combinators,
         transformers,
         containers,
-        ListZipper,
         vector,
         fused-effects,
         split,
         array,
-        MissingH
+        pureMD5,
+        bytestring,
+        freer-simple
     default-extensions: TypeFamilies, OverloadedRecordDot, TypeApplications, DataKinds
     ghc-options: -O2
 

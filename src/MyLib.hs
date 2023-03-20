@@ -1,3 +1,6 @@
+{-# LANGUAGE GADTs #-}
+{-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE FlexibleContexts #-}
 module MyLib where
 
 import Text.Megaparsec
@@ -31,6 +34,19 @@ instance Foldable Tree where
 instance Traversable Tree where
   traverse f (Leaf a) = Leaf <$> f a
   traverse f (Branch a xs) = Branch <$> f a <*> traverse (traverse f) xs
+
+data Direction = North | East | South | West deriving (Show, Eq, Ord)
+
+instance Enum Direction where
+  fromEnum North = 0
+  fromEnum East = 1
+  fromEnum South = 2
+  fromEnum West = 3
+  toEnum n = case n `mod` 4 of
+    0 -> North
+    1 -> East
+    2 -> South
+    3 -> West
 
 type Parser = Parsec Void String
 
@@ -157,3 +173,56 @@ primeSeive :: Integral a => [a]
 primeSeive = f [2..]
   where
     f (x : xs) = x : f (filter ((/= 0) . (`mod` x)) xs)
+
+data Nat = Z | S Nat deriving (Eq, Ord)
+data Vec (n :: Nat) a where
+  Nil :: Vec 'Z a
+  Cons :: a -> Vec n a -> Vec (S n) a
+
+instance Show Nat where
+  show n = show' 0 n
+    where
+      show' n Z = "Nat" ++ show n
+      show' n (S x) = show' (n + 1) x
+
+instance Show a => Show (Vec n a) where
+  show Nil = "<>"
+  show (Cons x xs) = '<' : show x ++ show' xs
+    where
+      show' :: Show a => Vec n a -> String
+      show' Nil = ">"
+      show' (Cons y ys) = ',' : show y ++ show' ys
+
+instance Functor (Vec 'Z) where
+  fmap _ Nil = Nil
+
+instance Functor (Vec n) => Functor (Vec ('S n)) where
+  fmap f (Cons x xs) = Cons (f x) (fmap f xs)
+
+instance Applicative (Vec 'Z) where
+  pure _ = Nil
+  Nil <*> Nil = Nil
+
+instance Applicative (Vec n) => Applicative (Vec ('S n)) where
+  pure a = Cons a (pure a)
+  Cons f fs <*> Cons x xs = Cons (f x) (fs <*> xs)
+
+instance Num a => Num (Vec 'Z a) where
+  Nil + Nil = Nil
+  Nil * Nil = Nil
+  abs Nil = Nil
+  signum Nil = Nil
+  fromInteger _ = Nil
+  negate Nil = Nil
+
+instance (Num a, Num (Vec n a), Applicative (Vec n)) => Num (Vec ('S n) a) where
+  Cons x xs + Cons y ys = Cons (x + y) (xs + ys)
+  Cons x xs * Cons y ys = Cons (x * y) (xs * ys)
+  abs (Cons x xs) = Cons (abs x) (abs xs)
+  signum (Cons x xs) = Cons (signum x) (signum xs)
+  fromInteger = pure . fromInteger
+  negate (Cons x xs) = Cons (negate x) (negate xs)
+
+manhattan :: Num a => Vec n a -> a
+manhattan Nil = 0
+manhattan (Cons x xs) = x + manhattan xs
