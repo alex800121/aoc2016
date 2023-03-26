@@ -1,70 +1,55 @@
+{-# LANGUAGE LambdaCase #-}
 module Day18 (day18) where
 
 import MyLib
+import Data.List.Split
 import Data.List
-import Data.Map (Map)
-import qualified Data.Map as Map
-import Control.Monad (forM_)
-import Control.Effect.State
-import Control.Carrier.State.Strict
+import GHC.Bits
 
-type Index = (Int, Int)
-type LightMap = Map Index Char
+test :: String
+test = ".^^.^.^^^^"
 
-inputParser :: [String] -> Map Index Char
-inputParser = drawMap Just
+input :: String
+input = "^..^^.^^^..^^.^...^^^^^....^.^..^^^.^.^.^^...^.^.^.^.^^.....^.^^.^.^.^.^.^.^^..^^^^^...^.....^....^."
 
-drawLightMap :: LightMap -> String
-drawLightMap = unlines . drawGraph f
+nextRow :: String -> String
+nextRow x = map f x'
   where
-    f Nothing = ' '
-    f (Just a) = a
+    x' = divvy 3 1 $ '.' : x ++ "."
+    f n = if n `elem` xs then '^' else '.'
+    xs =
+      [ "^^."
+      , ".^^"
+      , "^.."
+      , "..^"
+      ]
 
-surrounds :: [Index]
-surrounds = delete (0, 0) [(x, y) | x <- [-1 .. 1], y <- [-1 .. 1]]
-
-step' :: LightMap -> LightMap
-step' m = Map.mapWithKey f m
+encode :: String -> (Int, Integer)
+encode s = (length s, f 0 s)
   where
-    ks = Map.keys m
-    minX = minimum $ map fst ks
-    maxX = maximum $ map fst ks
-    minY = minimum $ map snd ks
-    maxY = maximum $ map snd ks
-    corners = [(x, y) | x <- [minX, maxX], y <- [minY, maxY]]
-    f k a
-      | k `elem` corners = '#'
-      | a == '#' = if onN == 2 || onN == 3 then '#' else '.'
-      | a == '.' = if onN == 3 then '#' else '.'
-      where
-        sur = map ((\x -> Map.findWithDefault '.' x m) . (+& k)) surrounds
-        onN = length (filter (== '#') sur)
-        offN = length (filter (== '.') sur)
+    f n [] = n
+    f n (x : xs) = f (2 * n + (\case ; '^' -> 1 ; '.' -> 0) x) xs
 
-step :: LightMap -> LightMap
-step m = Map.mapWithKey f m
+-- "..^^." = 
+nextRow' :: (Int, Integer) -> (Int, Integer)
+nextRow' (l, n) = (l, f 0 0 (shiftL n 1))
   where
-    f k a
-      | a == '#' = if onN == 2 || onN == 3 then '#' else '.'
-      | a == '.' = if onN == 3 then '#' else '.'
-      where
-        sur = map ((\x -> Map.findWithDefault '.' x m) . (+& k)) surrounds
-        onN = length (filter (== '#') sur)
-        offN = length (filter (== '.') sur)
+    n' = shiftL n 1
+    xs = [ 1, 3, 4, 6 ]
+    f :: Int -> Integer -> Integer -> Integer
+    f x y z 
+      | x >= l = y
+      | otherwise = f (x + 1) (if (z `mod` 8) `elem` xs then setBit y x else y) (shiftR z 1)
 
-runLM :: (LightMap -> LightMap) -> Int -> LightMap -> LightMap
-runLM f n m = run . execState m $ forM_ [1..n] $ \_ -> modify f
+decode :: (Int, Integer) -> String
+decode (l, n) = f l "" n
+  where
+    f x y z
+      | x <= 0 = y
+      | otherwise = f (x - 1) ((if even z then '.' else '^') : y) (shiftR z 1)
 
 day18 :: IO ()
 day18 = do
-  input <- inputParser . lines <$> readFile "input18.txt"
-  let
-    ks = Map.keys input
-    minX = minimum $ map fst ks
-    maxX = maximum $ map fst ks
-    minY = minimum $ map snd ks
-    maxY = maximum $ map snd ks
-    corners = [(x, y) | x <- [minX, maxX], y <- [minY, maxY]]
-    input' = foldr (`Map.insert` '#') input corners
-  putStrLn ("day18a: " ++ show (length $ Map.filter (== '#') $ runLM step 100 input))
-  putStrLn ("day18b: " ++ show (length $ Map.filter (== '#') $ runLM step' 100 input'))
+  putStrLn $ ("day18a: " ++) $ show $ sum $ map (\(x, y) -> x - popCount y) $ take 40 $ iterate nextRow' $ encode input
+  putStrLn $ ("day18b: " ++) $ show $ sum $ map (\(x, y) -> x - popCount y) $ take 400000 $ iterate nextRow' $ encode input
+  -- putStrLn $ ("day18b: " ++) $ show $ firstRepeat $ iterate nextRow' $ encode input

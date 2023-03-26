@@ -1,45 +1,53 @@
+{-# LANGUAGE LambdaCase #-}
 module Day16 (day16) where
 
 import MyLib
-import Data.Function ((&))
-import Data.IntMap (IntMap)
-import qualified Data.IntMap as IntMap
-import Data.Map (Map)
-import qualified Data.Map as Map
-import Text.Megaparsec ( parseMaybe, anySingle, anySingleBut, many, eof )
-import Text.Megaparsec.Char ( char, eol, space, string )
+import Data.Vector (Vector)
+import qualified Data.Vector as V
+import qualified Data.Vector.Mutable as MV
+import Data.Maybe (isJust, fromJust)
+import Control.Monad.ST (ST, runST)
 import Data.List.Split
-import Control.Applicative ((<|>))
-import Data.Maybe (fromJust)
+import Data.List
 
-type Sue = IntMap Hint
-type Hint = Map String Int
-type Hint' = Map String (Int -> Int)
+type Bit = Bool
+one = True
+zero = False
+type Bits = Vector Bool
 
-hintParser :: Parser Hint
-hintParser = Map.singleton <$> (many (anySingleBut ':') <* string ": ") <*> signedInteger
+initBits :: String -> Bits
+initBits = V.fromList . map (\case ; '1' -> True ; '0' -> False)
 
-inputParser :: Parser Sue
-inputParser = do
-  a <- string "Sue " >> signedInteger <* string ": "
-  let
-    f = do
-      x <- hintParser
-      (string ", " >> (x :) <$> f) <|> (eof >> return [x])
-  b <- Map.unions <$> f
-  return $ IntMap.singleton a b
+input :: String
+input = "10111011111001111"
 
+printBits :: [Bit] -> String
+printBits = map (\x -> if x then '1' else '0')
+
+buildBits :: Int -> Int -> Int -> MV.STVector s (Maybe Bool) -> ST s (Vector Bool)
+buildBits refLen start len v
+  | start >= len = V.map fromJust <$> V.freeze v
+  | start > refLen * 2 = buildBits (refLen * 2 + 1) start len v
+  | start > refLen = let n = 2 * refLen - start in MV.read v n >>= (MV.write v start . fmap not) >> buildBits refLen (start + 1) len v
+  | start == refLen = MV.write v start (Just zero) >> buildBits refLen (start + 1) len v
+  | start < refLen = buildBits refLen (start + 1) len v
+
+buildBits' :: Int -> Vector Bool -> Vector Bool
+buildBits' targetLen v = runST $ do
+  let len = V.length v
+  v' <- V.thaw (V.map Just v) >>= (`MV.grow` (targetLen - len))
+  buildBits len 0 targetLen v'
+
+checkSum :: [Bit] -> [Bit]
+checkSum bits
+  | odd $ length bits = bits
+  | otherwise = checkSum . f $ bits
+  where
+    f [] = []
+    f [x] = []
+    f (x : y : xs) = (x == y) : f xs
 
 day16 :: IO ()
 day16 = do
-  hints <- Map.unions . map (fromJust . parseMaybe hintParser) . lines <$> readFile "input16-1.txt"
-  sues <- IntMap.unions . map (fromJust . parseMaybe inputParser) . lines <$> readFile "input16.txt"
-  let
-    hints' = Map.mapWithKey (\k a -> case k of
-      "cats" -> (> a)
-      "trees" -> (> a)
-      "pomeranians" -> (< a)
-      "goldfish" -> (< a)
-      _ -> (== a)) hints
-  putStrLn ("day16a: " ++ show (IntMap.filter (`Map.isSubmapOf` hints) sues))
-  putStrLn ("day16b: " ++ show (IntMap.filter (flip (Map.isSubmapOfBy (&)) hints') sues))
+  putStr "day16a: " >> putStrLn (printBits $ checkSum $ V.toList $ buildBits' 272 $ initBits input)
+  putStr "day16b: " >> putStrLn (printBits $ checkSum $ V.toList $ buildBits' 35651584 $ initBits input)

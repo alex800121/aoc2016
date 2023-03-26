@@ -1,60 +1,46 @@
 module Day15 (day15) where
 
-import MyLib (Parser, signedInteger)
-import Text.Megaparsec (MonadParsec(eof, label), many, parseMaybe, anySingle, anySingleBut)
-import Control.Applicative ((<|>))
-import Text.Megaparsec.Char.Lexer (decimal)
-import Text.Megaparsec.Char (space, char, eol, string)
+import MyLib 
+import Text.Megaparsec (parseMaybe)
+import Text.Megaparsec.Char (space, char, string)
 import Data.Maybe (fromJust)
+import Debug.Trace
+import Data.List
 
-data Ingredient = Ingredient {name :: String, properties :: [Int]}
-  deriving (Show, Eq)
+data Disk = D { cyc :: Int, offset :: Int } deriving (Show, Eq, Ord)
 
-inputParser :: Parser Ingredient
-inputParser = do
-  name <- many (anySingleBut ':')
-  string ": capacity "
-  capacity <- signedInteger
-  string ", durability "
-  durability <- signedInteger
-  string ", flavor "
-  flavor <- signedInteger
-  string ", texture "
-  texture <- signedInteger
-  string ", calories "
-  calories <- signedInteger <* eof
-  return $ Ingredient name [capacity, durability, flavor, texture, calories]
+diskParser :: Parser Disk
+diskParser = do
+  d <- string "Disc #" >> signedInteger
+  c <- string " has " >> signedInteger
+  o <- string " positions; at time=0, it is at position " >> signedInteger <* char '.' <* space
+  return $ D c (negate (o + d) `mod` c)
 
-sumVariants :: Int -> Int -> [[Int]]
-sumVariants n target = f n target [] []
+disk0 :: Disk
+disk0 = D 1 0
+
+combineDisk :: Disk -> Disk -> Disk
+combineDisk (D c1 o1) (D c2 o2) = D (lcm c1 c2) ((o2 - (c2 * y * m)) `mod` c3)
   where
-    f :: Int -> Int -> [Int] -> [[Int]] -> [[Int]]
-    f n' target' l
-      | n' == 0 && target' == 0 = (l :)
-      | n' == 1 = ((target' : l) :)
-      | n' > 1 && target' == 0 = ((replicate n' 0 ++ l) :)
-      | n' > 1 && target' > 0 = foldr (.) id [f (n' - 1) (target' - a) (a : l) | a <- [0 .. target']]
+    (n, x, y) = emcd c1 c2
+    c3 = lcm c1 c2
+    m = (o2 - o1) `div` n
 
--- day15a :: Int -> [Ingredient] -> [[[Int]]]
-day15a total i = let
-  n = length i
-  sumV = sumVariants n total
-  l = map (product . init . map (max 0) . foldr (zipWith (+)) (repeat 0) . zipWith scoreIngredient i) sumV
-  in l
 
-day15b total i = let
-  n = length i
-  sumV = sumVariants n total
-  l = map (product . init) . filter ((== 500) . last) $ map (map (max 0) . foldr (zipWith (+)) (repeat 0) . zipWith scoreIngredient i) sumV
-  in l
+-- c1 a + o1 = c2 b + o2 = t
+-- c1 a = c2 b + o2 - o1 = t - o1
+-- c1 a - c2 b = o2 - o1 = (t - o1) - c2 b
+-- c1 x + c2 y = n
+-- m = (o2 - o1) `div` n
+-- c1 (x * m) + c2 (y * m) = m * n = o2 - o1 = (t - o1) - c2 b
+-- --------------------------------- o2 - o1 = (t - o1) + c2 * (y * m)
+-- t = o2 - o1 - (c2 * y * m) + o1 = o1 - c2 * y * m
 
-scoreIngredient :: Ingredient -> Int -> [Int]
-scoreIngredient x y = map (y *) x.properties
 
 day15 :: IO ()
 day15 = do
-  ingredients <- map (fromJust . parseMaybe inputParser) . lines <$> readFile "input15.txt"
-  -- print ingredients
-  -- print $ sumVariants (length ingredients) 100
-  putStrLn ("day15a: " ++ show (maximum $ day15a 100 ingredients))
-  putStrLn ("day15b: " ++ show (maximum $ day15b 100 ingredients))
+  -- disks <- map (fromJust . parseMaybe diskParser) . lines <$> readFile "test15.txt"
+  disks <- map (fromJust . parseMaybe diskParser) . lines <$> readFile "input15.txt"
+  let disks' = disks ++ [D 11 (negate 7 `mod` 11)]
+  putStrLn $ ("day15a: " ++) $ show $ offset $ foldl' combineDisk disk0 disks
+  putStrLn $ ("day15b: " ++) $ show $ offset $ foldl' combineDisk disk0 disks'

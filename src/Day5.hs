@@ -2,11 +2,16 @@
 module Day5 (day5) where
 
 import MyLib
-import Data.Digest.Pure.MD5
-import Data.ByteString.Lazy (ByteString)
+-- import Data.Digest.Pure.MD5
+import Data.ByteString.Base16
+import Crypto.Hash.MD5
+-- import Data.ByteString (ByteString)
+-- import qualified Data.ByteString as ByteString
 import Data.String (fromString)
-import Data.List (isPrefixOf, delete)
+import Data.List (delete)
 import Data.Char (digitToInt)
+import Data.ByteString.Char8 (ByteString)
+import qualified Data.ByteString.Char8 as ByteString
 import Debug.Trace
 
 input :: ByteString
@@ -16,28 +21,30 @@ input = "cxdnnyjw"
 inputList :: [ByteString]
 inputList = map ((input <>) . fromString . show)  [0..]
 
-hashList :: [String]
-hashList = map (show . md5) inputList
+hashList :: [ByteString]
+hashList = map (encode . hash) inputList
 
-has5Zero :: [String]
-has5Zero = filter ("00000" `isPrefixOf`) hashList
+has5Zero :: [ByteString]
+has5Zero = filter ("00000" `ByteString.isPrefixOf`) hashList
 
-take8NonZero :: String
-take8NonZero = map (!! 5) $ take 8 has5Zero
+take8NonZero :: ByteString
+take8NonZero = ByteString.pack $ map (`ByteString.index` 5) $ take 8 has5Zero
 
-buildPW :: String -> String -> [String] -> String
+buildPW :: ByteString -> String -> [ByteString] -> ByteString
 buildPW temp seen (x : xs)
-  | trace (temp ++ ',' : seen) False = undefined
+  -- | trace (ByteString.unpack $ temp <> (',' `ByteString.cons` fromString seen)) False = undefined
   | null seen =  temp
   | pos `notElem` seen = buildPW temp seen xs
   | otherwise = buildPW temp' seen' xs
   where
-    pos = x !! 5
+    pos = x `ByteString.index` 5
     pos' = digitToInt pos
     seen' = delete pos seen
-    temp' = take pos' temp ++ (x !! 6) : drop (pos' + 1) temp
+    temp' = ByteString.take pos' temp <> ((x `ByteString.index` 6) `ByteString.cons` ByteString.drop (pos' + 1) temp)
 
 day5 :: IO ()
 day5 = do
-  -- putStrLn $ "day5a: " ++ take8NonZero
-  putStrLn $ "day5b: " ++ buildPW "xxxxxxxx" "01234567" has5Zero
+  ByteString.putStr $ fromString "day5a: " <> take8NonZero
+  putStrLn ""
+  ByteString.putStr $ fromString "day5b: " <> buildPW (fromString "xxxxxxxx") "01234567" has5Zero
+  putStrLn ""

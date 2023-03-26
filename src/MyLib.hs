@@ -14,9 +14,10 @@ import Data.List.Split (chunksOf)
 import Data.Foldable (toList)
 import Data.Map (Map)
 import qualified Data.Map as Map
-import Data.List (delete, tails, group)
-import Data.Maybe (fromMaybe)
+import Data.List (delete, tails, group, nub)
+import Data.Maybe (fromMaybe, maybeToList)
 import Debug.Trace
+import Control.Monad (guard, mplus)
 
 (+&):: (Num a, Num b) => (a, b) -> (a, b) -> (a, b)
 (a, b) +& (c, d) = (a + c, b + d)
@@ -49,6 +50,13 @@ instance Enum Direction where
     3 -> West
 
 type Parser = Parsec Void String
+
+emcd :: Integral a => a -> a -> (a, a, a)
+emcd a 0 = (a, 1, 0)
+emcd a b = (g, s, t-(q*s))
+  where 
+    (q, r) = divMod a b 
+    (g, t, s) = emcd b r
 
 firstRepeat :: Eq a => [a] -> Maybe (Int, a)
 firstRepeat = g 0 []
@@ -185,6 +193,11 @@ instance Show Nat where
       show' n Z = "Nat" ++ show n
       show' n (S x) = show' (n + 1) x
 
+instance Eq a => Eq (Vec 'Z a) where
+  Nil == Nil = True
+instance (Eq a, Eq (Vec n a)) => Eq (Vec ('S n) a) where
+  Cons x xs == Cons y ys = x == y && xs == ys
+  
 instance Show a => Show (Vec n a) where
   show Nil = "<>"
   show (Cons x xs) = '<' : show x ++ show' xs
@@ -226,3 +239,40 @@ instance (Num a, Num (Vec n a), Applicative (Vec n)) => Num (Vec ('S n) a) where
 manhattan :: Num a => Vec n a -> a
 manhattan Nil = 0
 manhattan (Cons x xs) = x + manhattan xs
+
+overlapEucVec :: Ord a => Vec n (a, a) -> Vec n (a, a) -> Maybe (Vec n (a, a))
+overlapEucVec Nil Nil = pure Nil
+overlapEucVec (Cons (a, b) xs) (Cons (c, d) ys)
+  | maxOfSmall < minOfBig = do
+    rest <- overlapEucVec xs ys
+    pure (Cons (maxOfSmall, minOfBig) rest)
+  | otherwise = Nothing
+  where
+    maxOfSmall = max a c
+    minOfBig = max b d
+
+a = Cons (1, 5) Nil
+a' = Cons (2, 4) Nil
+b = Cons (3, 7) Nil
+c = Cons (1, 5) $ Cons (2, 6) Nil
+d = Cons (3, 7) $ Cons (4, 8) Nil
+e = Cons (2, 4) $ Cons (3, 5) Nil
+f = Cons (1, 5) $ Cons (2, 6) $ Cons (3, 7) Nil
+g = Cons (2, 4) $ Cons (3, 5) $ Cons (4, 6) Nil
+h = Cons (1, 5) $ Cons (2, 6) $ Cons (3, 7) $ Cons (4, 8) Nil
+i = Cons (2, 4) $ Cons (3, 5) $ Cons (4, 6) $ Cons (5, 7) Nil
+
+subtractEucVec :: Ord a => Vec n (a, a) -> Vec n (a, a) -> [Vec n (a, a)]
+subtractEucVec Nil Nil = [Nil]
+subtractEucVec (Cons (a, b) xs) (Cons (c, d) ys) =
+     [ Cons (x, y) ys | (x, y) <- [(c, a), (b, d)], y > x ]
+  ++ [ Cons (x', y') rest | (x', y') <- [(max a c, min b d)], y' > x', rest <- subtractEucVec' xs ys ]
+subtractEucVec' :: Ord a => Vec n (a, a) -> Vec n (a, a) -> [Vec n (a, a)]
+subtractEucVec' Nil Nil = []
+subtractEucVec' (Cons (a, b) xs) (Cons (c, d) ys) =
+     [ Cons (x, y) ys | (x, y) <- [(c, a), (b, d)], y > x ]
+  ++ [ Cons (x', y') rest | (x', y') <- [(max a c, min b d)], y' > x', rest <- subtractEucVec' xs ys ]
+
+fromVec :: Vec n a -> [a]
+fromVec Nil = []
+fromVec (Cons x xs) = x : fromVec xs

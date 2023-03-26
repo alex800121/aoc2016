@@ -1,41 +1,43 @@
 module Day14 (day14) where
 
-
 import MyLib
-import Data.List (transpose)
+import Crypto.Hash.MD5
+import Data.ByteString.Char8 (ByteString)
+import qualified Data.ByteString.Char8 as BS
+import Data.String
+import Data.ByteString.Base16
+import Data.List
+import Data.Maybe
 
-raceTime :: Int
-raceTime = 2503
+input :: ByteString
+input = fromString "cuanljph"
 
-raceTimeList = [1 .. raceTime]
+test :: ByteString
+test = fromString "abc"
 
-data Reindeer = Reindeer {name :: String, speed :: Int, restAt :: Int, cycle :: Int} deriving (Show, Eq)
+hashListN :: Int -> ByteString -> Int -> ByteString
+hashListN n s = (!! n) . iterate (encode . hash) . (s <>) . fromString . show
 
--- Vixen can fly 8 km/s for 8 seconds, but then must rest for 53 seconds.
-inputParser :: String -> Reindeer
-inputParser st = let
-  name : _ : _ : s : _ : _ : t : _ : _ : _ : _ : _ : _ : rest : _ = words st
-  speed = read s
-  restAt = read t
-  cy = read t + read rest
-  in Reindeer name speed restAt cy
+hashList :: Int -> ByteString -> [ByteString]
+hashList n s = map (hashListN n s) [0..]
 
-distancOfReindeerAt :: Reindeer -> Int -> Int
-distancOfReindeerAt (Reindeer _ speed restAt cycle) i = let
-  cycles = i `div` cycle
-  additionalTime = min restAt $ i `mod` cycle
-  in speed * (cycles * restAt + additionalTime)
+calcKey :: Int -> Int -> ByteString -> (Maybe Char, [Char], ByteString)
+calcKey n1 n2 x = (listToMaybe $ hasNConsecutives n1 x, hasNConsecutives n2 x, x)
 
-day14b reindeers = let
-  f x = do
-    r <- reindeers
-    return $ distancOfReindeerAt r x
-  distanceList = map f raceTimeList
-  g x = let m = maximum x in map (\y -> if y == m then 1 else 0) x
-  in maximum $ map sum $ transpose $ map g distanceList
+isKey :: Int -> [(Maybe Char, [Char], ByteString)] -> Bool
+isKey _ ((Nothing, _, _) : _) = False
+isKey n ((Just x, _, _) : xs) = any (elem x . snd') $ take 1000 xs
+
+fst' :: (a, b, c) -> a
+fst' (a, _, _) = a
+
+snd' :: (a, b, c) -> b
+snd' (_, b, _) = b
+
+hasNConsecutives :: Int -> ByteString -> [Char]
+hasNConsecutives n s = map BS.head $ filter ((>= n) . BS.length) $ BS.group s
 
 day14 :: IO ()
 day14 = do
-  rs <- map inputParser . lines <$> readFile "input14.txt"
-  putStrLn ("day14a: " ++ show (maximum $ map (`distancOfReindeerAt` raceTime) rs))
-  putStrLn ("day14b: " ++ show (day14b rs))
+  putStrLn $ ("day14a: " ++) $ show $ (!! 63) $ findIndices (isKey 1000) $ tails $ map (calcKey 3 5) $ hashList 1 input
+  putStrLn $ ("day14b: " ++) $ show $ (!! 63) $ findIndices (isKey 1000) $ tails $ map (calcKey 3 5) $ hashList 2017 input

@@ -1,46 +1,27 @@
 module Day20 (day20) where
 
--- import MyLib
+import MyLib
+import Data.List.Split
 import Data.List
+import Data.Function
 
-inputN :: Int
-inputN = 34000000
+-- inputN :: Int
+-- inputN = 4294967295
+--
+-- inputList :: Vec (S Z) (Int, Int)
+-- inputList = Cons (0, inputN + 1) Nil
 
-day20a :: Integral a => a -> a
-day20a = (* 10) . sum . factors
+withinRange :: Ord a => Vec n (a, a) -> a -> Bool
+withinRange Nil _ = True
+withinRange (Cons (x, y) xs) a = x <= a && a < y && withinRange xs a
 
-day20b :: Integral a => a -> a
-day20b n = (* 11) . sum . filter (> (n - 1) `div` 50) . factors $ n
-
-primeFactors :: Integral a => a -> [a]
-primeFactors a = f a primes []
-  where
-    primes = takeWhile (<= sqrtCeiling a) primeSeive
-    f 1 _ ls = ls
-    f x [] ls = x : ls
-    f x (y : ys) ls
-      | x `mod` y == 0 = f (x `div` y) (y : ys) (y : ls)
-      | otherwise = f x ys ls
-
-primeFactors' :: Integral a => a -> [(Int, a)]
-primeFactors' = map ((,) <$> length <*> head) . group . primeFactors
-
-factors :: Integral a => a -> [a]
-factors x = let
-  p = primeFactors' x
-  f [] = [1]
-  f ((n, a) : xs) = (*) <$> map (a ^) [0 .. n] <*> f xs
-  in f p
-
-sqrtCeiling :: Integral a => a -> a
-sqrtCeiling = ceiling . sqrt . fromIntegral
-
-primeSeive :: Integral a => [a]
-primeSeive = f [2..]
-  where
-    f (x : xs) = x : f (filter ((/= 0) . (`mod` x)) xs)
+day20a :: Ord a => [Vec (S Z) (a, a)] -> a -> a
+day20a [] x = x
+day20a (y@(Cons (_, b) _) : ys) x = if withinRange y x then day20a ys b else day20a ys x
 
 day20 :: IO ()
 day20 = do
-  putStrLn ("day20a: " ++ show ((+ 1) $ length $ takeWhile (< inputN) $ map day20a [1..]))
-  putStrLn ("day20b: " ++ show ((+ 1) $ length $ takeWhile (< inputN) $ map day20b [1..]))
+  input <- sortBy (compare `on` (\(Cons (x, _) Nil) -> x)) . map ((\(x : y : _) -> Cons (x, y - 1) Nil) . map (read @Int) . splitOn "-") . lines <$> readFile "input20.txt"
+  -- let day20a = foldl' (\acc x -> concatMap (subtractEucVec x) acc) [inputList] input
+  putStrLn $ ("day20a: " ++) $ show $ input
+  putStrLn $ ("day20b: " ++) $ show ""
