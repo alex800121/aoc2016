@@ -1,75 +1,88 @@
 module Day21 (day21) where
 
 import MyLib
-import Data.List.Split
+import Data.Sequence (Seq(..))
+import qualified Data.Sequence as Seq
+import Text.Megaparsec
+import Text.Megaparsec.Char
+import Data.Maybe (fromJust)
 import Data.List
-import Debug.Trace
 
-type Item = (Int, Int, Int)
-data Player = P { hit :: Int, damage :: Int, armor :: Int }
+initPW :: Seq Char
+initPW = Seq.fromList "abcdefgh"
+
+scrambledPW :: Seq Char
+scrambledPW = Seq.fromList "fbgdceah"
+
+data Ins = SwapPos Int Int
+         | SwapLet Char Char
+         | Rotate Int
+         | RotateOn Char
+         | RevPos Int Int
+         | MovePos Int Int
   deriving (Show, Eq, Ord)
-type Boss = Player
 
-boss :: Boss
-boss = P 100 8 2
+rotateL :: Seq a -> Seq a
+rotateL (x :<| xs) = xs :|> x
 
--- buy :: [Item] -> [Item] -> [Item] -> [((Int, Player), (Item, Item, Item))]
-buy :: [Item] -> [Item] -> [Item] -> [(Int, Player)]
-buy w a r = do
-  w1 <- w
-  a1 <- (0, 0, 0) : a
-  let f (d1, d2, d3) (e1, e2, e3) = (d1 + e1, d2 + e2, d3 + e3)
-  r1 <- map (foldr f (0, 0, 0)) $ filter ((<= 2) . length) $ subsequences r
-  let (x, y, z) = foldr f (0, 0, 0) [w1, a1, r1]
-  -- pure ((x, P 100 y z), (w1, a1, r1))
-  pure (x, P 100 y z)
+rotateR :: Seq a -> Seq a
+rotateR (xs :|> x) = x :<| xs
 
-weapons :: [Item]
-weapons =
-  [ (8, 4, 0)
-  , (10, 5, 0)
-  , (25, 6, 0)
-  , (40, 7, 0)
-  , (74, 8, 0)
-  ]
-
-armors :: [Item]
-armors =
-  [ (13, 0, 1)
-  , (31, 0, 2)
-  , (53, 0, 3)
-  , (75, 0, 4)
-  , (102, 0, 5)
-  ]
-
-rings :: [Item]
-rings =
-  [ (25, 1, 0)
-  , (50, 2, 0)
-  , (100, 3, 0)
-  , (20, 0, 1)
-  , (40, 0, 2)
-  , (80, 0, 3)
-  ]
-
-attack :: Player -> Player -> Player
-attack attack@(P h1 d1 a1) defend@(P h2 d2 a2) = P (h2 - attackPoint) d2 a2
+readIns :: Seq Char -> Ins -> Seq Char
+readIns s (SwapPos x y) = Seq.adjust' (const (Seq.index s y)) x
+                        $ Seq.adjust' (const (Seq.index s x)) y s
+readIns s (SwapLet a b) = Seq.adjust' (const b) x
+                        $ Seq.adjust' (const a) y s
   where
-    attackPoint = max 1 (d1 - a2)
-
-playGame :: Boss -> Player -> Bool
-playGame boss player
-  -- | trace (show (boss, player)) False = undefined
-  | boss'.hit <= 0 = True
-  | player'.hit <= 0 = False
-  | otherwise = playGame boss' player'
+    Just x = Seq.elemIndexL a s
+    Just y = Seq.elemIndexL b s
+readIns s (Rotate n)
+  | n >= 0 = iterate rotateR s !! n
+  | otherwise = iterate rotateL s !! negate n
+readIns s (RotateOn c) = iterate rotateR s !! (x + 1 + if x >= 4 then 1 else 0)
   where
-    boss' = player `attack` boss
-    player' = boss `attack` player
-  
+    Just x = Seq.elemIndexL c s
+readIns s (RevPos x y) = Seq.take x s <> Seq.reverse (Seq.take (y - x + 1) $ Seq.drop x s) <> Seq.drop (y + 1) s
+readIns s (MovePos x y) = Seq.insertAt y a $ Seq.deleteAt x s
+  where
+    a = Seq.index s x
+
+unscramble :: Seq Char -> Ins -> Seq Char
+unscramble s (SwapPos x y) = Seq.adjust' (const (Seq.index s y)) x
+                           $ Seq.adjust' (const (Seq.index s x)) y s
+unscramble s (SwapLet a b) = Seq.adjust' (const b) x
+                           $ Seq.adjust' (const a) y s
+  where
+    Just x = Seq.elemIndexL a s
+    Just y = Seq.elemIndexL b s
+unscramble s (Rotate n)
+  | n >= 0 = iterate rotateL s !! n
+  | otherwise = iterate rotateR s !! negate n
+unscramble s (RevPos x y) = Seq.take x s <> Seq.reverse (Seq.take (y - x + 1) $ Seq.drop x s) <> Seq.drop (y + 1) s
+unscramble s (MovePos y x) = Seq.insertAt y a $ Seq.deleteAt x s
+  where
+    a = Seq.index s x
+unscramble s (RotateOn c)
+  | odd x = iterate rotateL s !! ((x + 1) `div` 2)
+  | otherwise = iterate rotateL s !! (((((x - 1) `mod` 8) + 1) `div` 2) + 5)
+  where
+    Just x = Seq.elemIndexL c s
+-- unscramble s (RotateOn c) = iterate rotateR s !! (x + 1 + if x >= 4 then 1 else 0)
+--   where
+--     Just x = Seq.elemIndexL c s
+
+insParser :: Parser Ins
+insParser =
+      ( MovePos <$> (string "move position " >> signedInteger) <*> (string " to position " >> signedInteger) )
+  <|> ( SwapPos <$> (string "swap position " >> signedInteger) <*> (string " with position " >> signedInteger) )
+  <|> ( RevPos <$> (string "reverse positions " >> signedInteger) <*> (string " through " >> signedInteger) )
+  <|> ( Rotate <$> (string "rotate right " >> signedInteger <* string " step" <* optional (char 's')) )
+  <|> ( Rotate <$> (string "rotate left " >> (negate <$> signedInteger) <* string " step" <* optional (char 's')) )
+  <|> ( RotateOn <$> (string "rotate based on position of letter " >> anySingle) )
+  <|> ( SwapLet <$> (string "swap letter " >> anySingle) <*> (string " with letter " >> anySingle) )
+
 day21 :: IO ()
 day21 = do
-  -- mapM_ print $ sort $ buy weapons armors rings
-  putStrLn $ ("day21a: " ++) $ show $ fst $ head $ dropWhile (not . playGame boss . snd) $ sort $ buy weapons armors rings
-  putStrLn $ ("day21b: " ++) $ show $ fst $ head $ dropWhile (playGame boss . snd) $ reverse $ sort $ buy weapons armors rings
-  -- putStrLn $ ("day21b: " ++) $ show $ filter (not . snd) $ map (fmap (playGame boss)) $ reverse $ sort $ buy weapons armors rings
+  ins <- map (fromJust . parseMaybe insParser) . lines <$> readFile "input21.txt"
+  putStrLn $ ("day21a: " ++) $ show $ foldl' readIns initPW ins
+  putStrLn $ ("day21b: " ++) $ show $ foldl' unscramble scrambledPW $ reverse ins
