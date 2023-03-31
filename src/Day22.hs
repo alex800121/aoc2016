@@ -1,114 +1,108 @@
-{-# LANGUAGE LambdaCase #-}
 module Day22 (day22) where
 
-import MyLib hiding (Nat(..))
-import GHC.TypeLits (Symbol)
-import Control.Monad (guard)
-import Data.List (foldl', insert)
-import Debug.Trace
+import MyLib
+import Data.List
+import Data.Map (Map)
+import qualified Data.Map as Map
+import Text.Megaparsec.Char
+import Text.Megaparsec
+import Data.Char
+import Data.Maybe (fromJust, catMaybes, mapMaybe)
 import Data.Set (Set)
 import qualified Data.Set as Set
+import Control.Monad (mapM_)
 
-data GameState = G { spentMana :: Int,  turn :: Turn, boss :: Boss, player :: Player, spells :: [Spell] } deriving (Show, Eq, Ord)
-data Turn = BossT | PlayerT deriving (Show, Eq, Ord)
-data Boss = B { bossHp :: Int, bossDamage :: Int } deriving (Show, Eq, Ord)
-data Player = P { playerHp :: Int, playerMana :: Int, playerArmor :: Int } deriving (Show, Eq, Ord)
-data Spell = S { spellType :: SpellType, counter :: Int } deriving (Show, Eq, Ord)
-data SpellType = MagicMissile | Drain | Shield | Poison | Recharge deriving (Show, Eq, Ord)
+type Index = (Int, Int)
+data Partition = P { size :: Int, used :: Int, avail :: Int }
+  deriving (Show, Eq, Ord)
+type Disk = Map Index Partition
+data GameState = G { end :: Index, start :: Index, disk :: Disk, steps :: Int }
+  deriving (Show, Eq)
+instance Ord GameState where
+  compare (G e1 s1 d1 st1) (G e2 s2 d2 st2) =
+       compare (st1 + manhattan' s1 e1) (st2 + manhattan' s2 e2)
+    <> compare st1 st2
+    <> compare s1 s2
+    <> compare e1 e2
+    <> compare d1 d2
 
+adjacent :: [Index]
+adjacent = [(0, 1), (0, -1), (1, 0), (-1, 0)]
 
-testPlayer = P 10 250 0 :: Player
-testBoss1 = B 13 8 :: Boss
-testBoss2 = B 14 8 :: Boss
-initPlayer = P 50 500 0 :: Player
-initBoss = B 51 9 :: Boss
-initSpells =
-  [ S MagicMissile 0
-  , S Drain 0
-  , S Shield 0
-  , S Poison 0
-  , S Recharge 0
-  ] :: [Spell]
-initGameState = G 0 PlayerT initBoss initPlayer initSpells :: GameState
-testGameState1 = G 0 PlayerT testBoss1 testPlayer initSpells :: GameState
-testGameState2 = G 0 PlayerT testBoss2 testPlayer initSpells :: GameState
+partitionParser :: Parser Disk
+partitionParser = do
+  string "/dev/grid/node-x"
+  x <- signedInteger
+  string "-y"
+  y <- signedInteger
+  some (satisfy (not . isNumber))
+  size <- signedInteger
+  some (satisfy (not . isNumber))
+  used <- signedInteger
+  some (satisfy (not . isNumber))
+  avail <- signedInteger
+  some anySingle
+  pure $ Map.singleton (x, y) (P size used avail)
 
-step :: Int -> (Int -> GameState -> [GameState]) -> Set GameState -> Int
-step i p g = case choice i p x of
--- step i p g = trace (show x) $ case choice i p x of
-  Left n -> n
-  Right ys -> step i p $ foldl' (flip Set.insert) xs ys
+viablePairsN :: [Partition] -> Int
+viablePairsN xs = sum $ map f ts
   where
-    (x, xs) = Set.deleteFindMin g
+    ts = map (`splitAt` xs) [0 .. (length xs - 1)]
+    f (y, ys) = let z = head ys in if used z == 0 then 0 else length $ filter ((used z <=) . avail) (tail ys ++ y)
 
-choice :: Int -> (Int -> GameState -> [GameState]) -> GameState -> Either Int [GameState]
-choice i p g
-  | g'.boss.bossHp <= 0 = Left (g.spentMana)
-  | g.player.playerHp <= 0 = Right []
-  | g'.turn == BossT = Right [bossTurn g']
-  | g'.turn == PlayerT = Right $ p i g'
+viable :: Partition -> Partition -> Bool
+viable from to = used from <= avail to
+
+manhattan' :: Index -> Index -> Int
+manhattan' (x, y) (z, w) = abs (x - z) + abs (y - w)
+
+choices :: GameState -> Set GameState
+choices (G e s d st) = undefined
   where
-    g' = effects g
+    s' = mapMaybe ((d Map.!?) . (+& s)) adjacent
 
-bossTurn :: GameState -> GameState
-bossTurn g = g { turn = PlayerT, player = g.player { playerHp = g.player.playerHp - max 1 (g.boss.bossDamage - g.player.playerArmor) } }
-
-
-effects :: GameState -> GameState
-effects g = g' { spells = map (\(S a n) -> S a (max 0 (n - 1))) g.spells }
+testDisk :: Disk -> [String]
+testDisk = drawGraph f
   where
-    g' = foldr interpretEffect g g.spells
+    f Nothing = '#'
+    f (Just p)
+      | used p > 100 = 'X'
+      | used p >= 80 = '?'
+      | used p >= 60 = '.'
+      | otherwise = '!'
 
-interpretEffect :: Spell -> GameState -> GameState
-interpretEffect (S MagicMissile _) g = g
-interpretEffect (S Drain _) g = g
-interpretEffect (S Shield n) g 
-  | n > 0 = g { player = g.player { playerArmor = 7 } }
-  | otherwise = g { player = g.player { playerArmor = 0 } }
-interpretEffect (S Poison n) g
-  | n > 0 = g { boss = g.boss { bossHp = g.boss.bossHp - 3 } }
-  | otherwise = g
-interpretEffect (S Recharge n) g
-  | n > 0 = g { player = g.player { playerMana = g.player.playerMana + 101 } }
-  | otherwise = g
-
-playerTurn :: Int -> GameState -> [GameState]
-playerTurn i f = do
-  let g = f { player = f.player { playerHp = f.player.playerHp - i } }
-  guard $ g.player.playerHp > 0
-  S st n <- g.spells
-  guard $ n == 0
-  let
-    g' = case st of
-      MagicMissile ->
-        g { spentMana = g.spentMana + 53
-          , boss = g.boss { bossHp = g.boss.bossHp - 4 }
-          , player = g.player { playerMana = g.player.playerMana - 53 }
-          }
-      Drain ->
-        g { spentMana = g.spentMana + 73
-          , boss = g.boss { bossHp = g.boss.bossHp - 2 }
-          , player = g.player { playerMana = g.player.playerMana - 73, playerHp = g.player.playerHp + 2 }
-          }
-      Shield ->
-        g { spentMana = g.spentMana + 113
-          , player = g.player { playerMana = g.player.playerMana - 113 }
-          , spells = map (\case ; S Shield _ -> S Shield 6 ; a -> a) g.spells
-          }
-      Poison ->
-        g { spentMana = g.spentMana + 173
-          , player = g.player { playerMana = g.player.playerMana - 173 }
-          , spells = map (\case ; S Poison _ -> S Poison 6 ; a -> a) g.spells
-          }
-      Recharge ->
-        g { spentMana = g.spentMana + 229
-          , player = g.player { playerMana = g.player.playerMana - 229 }
-          , spells = map (\case ; S Recharge _ -> S Recharge 5 ; a -> a) g.spells
-          }
-  guard $ g'.player.playerMana > 0
-  return $ g' { turn = BossT }
-
+-- 7 + 14 + 14 + 5 * 33
 day22 :: IO ()
 day22 = do
-  putStrLn $ ("day22a: " ++) $ show $ step 0 playerTurn $ Set.singleton initGameState
-  putStrLn $ ("day22b: " ++) $ show $ step 1 playerTurn $ Set.singleton initGameState
+  disk <- Map.unions . map (fromJust . parseMaybe partitionParser) . drop 2 . lines <$> readFile "input22.txt"
+  putStrLn $ ("day22a: " ++) $ show $ viablePairsN $ Map.elems disk
+  putStrLn $ ("day22b: " ++) $ show $ 7 + 14 + 14 + 5 * 33
+{-
+
+...................................
+...................................
+...................................
+...................................
+...................................
+...................................
+...................................
+...................................
+...................................
+...................................
+...................................
+.....................XXXXXXXXXXXXXX
+...................................
+...................................
+...........................!.......
+...................................
+...................................
+...................................
+...................................
+...................................
+...................................
+...................................
+...................................
+...................................
+...................................
+
+-}
