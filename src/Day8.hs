@@ -15,7 +15,7 @@ type Index = (Int, Int)
 initRect = listArray ((0, 0), (49, 5)) (repeat False)
 testRect = listArray ((0, 0), (6, 2)) (repeat False)
 
-printRect = unlines . drawGraph (\case Just True -> '#'; Just _ -> '.') . Map.fromList . assocs
+printRect = unlines . drawGraph (\case Just True -> '#'; _ -> ' ') . Map.fromList . assocs
 
 readIns :: String -> Rect -> Rect
 readIns s r = case words s of
