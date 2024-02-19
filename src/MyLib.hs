@@ -39,6 +39,21 @@ pickAnySplit = f id
     f _ [] = []
     f g (x : xs) = (x, g xs) : f (g . (x :)) xs
 
+pickAnySplit' :: [a] -> [([a], a, [a])]
+pickAnySplit' = f id
+  where
+    f _ [] = []
+    f g (x : xs) = (g [], x, xs) : f (g . (x :)) xs
+
+pickNSplit :: Int -> [a] -> [([a], [a])]
+pickNSplit n l
+  | n <= 0 = [([], l)]
+  | otherwise =
+      [ (a : xs, b' <> ys)
+        | (b', a, b) <- pickAnySplit' l,
+          (xs, ys) <- pickNSplit (n - 1) b
+      ]
+
 (+&) :: (Num a, Num b) => (a, b) -> (a, b) -> (a, b)
 (a, b) +& (c, d) = (a + c, b + d)
 
@@ -133,7 +148,7 @@ calcLargeCycleN :: ([a] -> Maybe (Int, Int, a)) -> Int -> [a] -> Maybe a
 calcLargeCycleN f n xs = case f xs of
   Nothing -> Nothing
   Just (_, i, _) | n <= i -> Just $ xs !! n
-  Just (c, i, a) -> let n' = ((n - i) `mod` c) + i  in Just $ xs !! n'
+  Just (c, i, a) -> let n' = ((n - i) `mod` c) + i in Just $ xs !! n'
 
 firstRepeat' :: (Ord a) => [a] -> Maybe (Int, a)
 firstRepeat' = g 0 Set.empty
@@ -298,7 +313,7 @@ primeFactors a = f a primes []
 primeFactors' :: (Integral a) => a -> [(Int, a)]
 primeFactors' = map ((,) <$> length <*> head) . group . primeFactors
 
-factors :: Integral a => a -> [a]
+factors :: (Integral a) => a -> [a]
 factors x = nub $ concat $ [[a, b] | a <- [1 .. y], let (b, m) = x `divMod` a, m == 0]
   where
     y = sqrtCeiling x
