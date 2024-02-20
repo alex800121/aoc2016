@@ -42,7 +42,8 @@ common shared
         random,
         cryptohash,
         cryptohash-md5,
-        bytestring
+        bytestring,
+        base16-bytestring
     default-extensions: TypeFamilies, OverloadedRecordDot, TypeApplications, DataKinds, LambdaCase
     ghc-options: -O2
 
