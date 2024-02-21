@@ -17,7 +17,7 @@ Day13	/home/alex800121/haskell/aoc/2016/src/Day13.hs	1;"	m
 Day14	/home/alex800121/haskell/aoc/2016/src/Day14.hs	4;"	m
 Day15	/home/alex800121/haskell/aoc/2016/src/Day15.hs	1;"	m
 Day16	/home/alex800121/haskell/aoc/2016/src/Day16.hs	1;"	m
-Day17	/home/alex800121/haskell/aoc/2016/src/Day17.hs	1;"	m
+Day17	/home/alex800121/haskell/aoc/2016/src/Day17.hs	4;"	m
 Day18	/home/alex800121/haskell/aoc/2016/src/Day18.hs	1;"	m
 Day19	/home/alex800121/haskell/aoc/2016/src/Day19.hs	1;"	m
 Day2	/home/alex800121/haskell/aoc/2016/src/Day2.hs	1;"	m
@@ -49,6 +49,7 @@ IP	/home/alex800121/haskell/aoc/2016/src/Day7.hs	10;"	t
 Inc	/home/alex800121/haskell/aoc/2016/src/Day12.hs	15;"	C
 Index	/home/alex800121/haskell/aoc/2016/src/Day1.hs	12;"	t
 Index	/home/alex800121/haskell/aoc/2016/src/Day13.hs	10;"	t
+Index	/home/alex800121/haskell/aoc/2016/src/Day17.hs	28;"	t
 Index	/home/alex800121/haskell/aoc/2016/src/Day2.hs	13;"	t
 Index	/home/alex800121/haskell/aoc/2016/src/Day8.hs	13;"	t
 Ins	/home/alex800121/haskell/aoc/2016/src/Day1.hs	14;"	t
@@ -68,10 +69,12 @@ PackageInfo_AOC2016	/home/alex800121/haskell/aoc/2016/dist-newstyle/build/x86_64
 Pad	/home/alex800121/haskell/aoc/2016/src/Day2.hs	11;"	t
 Pair	/home/alex800121/haskell/aoc/2016/src/Day11.hs	30;"	t
 Parser	/home/alex800121/haskell/aoc/2016/src/MyLib.hs	116;"	t
+Path	/home/alex800121/haskell/aoc/2016/src/Day17.hs	26;"	t
 Paths_AOC2016	/home/alex800121/haskell/aoc/2016/dist-newstyle/build/x86_64-linux/ghc-9.6.3/AOC2016-0.1.0.0/build/autogen/Paths_AOC2016.hs	8;"	m
 Paths_AOC2016	/home/alex800121/haskell/aoc/2016/dist-newstyle/build/x86_64-linux/ghc-9.6.3/AOC2016-0.1.0.0/x/AOC2023/build/AOC2023/autogen/Paths_AOC2016.hs	8;"	m
 Pos	/home/alex800121/haskell/aoc/2016/src/Day1.hs	16;"	t
 Range	/home/alex800121/haskell/aoc/2016/src/Day11.hs	140;"	t
+Range	/home/alex800121/haskell/aoc/2016/src/Day17.hs	30;"	t
 Rect	/home/alex800121/haskell/aoc/2016/src/Day8.hs	11;"	t
 Reg	/home/alex800121/haskell/aoc/2016/src/Day12.hs	9;"	t
 S	/home/alex800121/haskell/aoc/2016/src/Day4.hs	8;"	t
@@ -104,6 +107,7 @@ allLoc	/home/alex800121/haskell/aoc/2016/src/Day1.hs	31;"	f
 baseNToInt	/home/alex800121/haskell/aoc/2016/src/MyLib.hs	224;"	f
 baseNToInteger	/home/alex800121/haskell/aoc/2016/src/MyLib.hs	221;"	f
 bfs	/home/alex800121/haskell/aoc/2016/src/Day13.hs	17;"	f
+bfs	/home/alex800121/haskell/aoc/2016/src/Day17.hs	53;"	f
 bindir	/home/alex800121/haskell/aoc/2016/dist-newstyle/build/x86_64-linux/ghc-9.6.3/AOC2016-0.1.0.0/build/autogen/Paths_AOC2016.hs	48;"	f
 bindir	/home/alex800121/haskell/aoc/2016/dist-newstyle/build/x86_64-linux/ghc-9.6.3/AOC2016-0.1.0.0/x/AOC2023/build/AOC2023/autogen/Paths_AOC2016.hs	48;"	f
 buildPassword	/home/alex800121/haskell/aoc/2016/src/Day5.hs	20;"	f
@@ -132,7 +136,7 @@ day13	/home/alex800121/haskell/aoc/2016/src/Day13.hs	34;"	f
 day14	/home/alex800121/haskell/aoc/2016/src/Day14.hs	47;"	f
 day15	/home/alex800121/haskell/aoc/2016/src/Day15.hs	46;"	f
 day16	/home/alex800121/haskell/aoc/2016/src/Day16.hs	21;"	f
-day17	/home/alex800121/haskell/aoc/2016/src/Day17.hs	3;"	f
+day17	/home/alex800121/haskell/aoc/2016/src/Day17.hs	63;"	f
 day18	/home/alex800121/haskell/aoc/2016/src/Day18.hs	3;"	f
 day19	/home/alex800121/haskell/aoc/2016/src/Day19.hs	3;"	f
 day2	/home/alex800121/haskell/aoc/2016/src/Day2.hs	55;"	f
@@ -149,8 +153,10 @@ day6	/home/alex800121/haskell/aoc/2016/src/Day6.hs	5;"	f
 day7	/home/alex800121/haskell/aoc/2016/src/Day7.hs	33;"	f
 day8	/home/alex800121/haskell/aoc/2016/src/Day8.hs	41;"	f
 day9	/home/alex800121/haskell/aoc/2016/src/Day9.hs	36;"	f
+decodeDoor	/home/alex800121/haskell/aoc/2016/src/Day17.hs	35;"	f
 decrypt	/home/alex800121/haskell/aoc/2016/src/Day4.hs	26;"	f
 decryptChar	/home/alex800121/haskell/aoc/2016/src/Day4.hs	23;"	f
+dirToChar	/home/alex800121/haskell/aoc/2016/src/Day17.hs	42;"	f
 drawASCII	/home/alex800121/haskell/aoc/2016/src/MyLib.hs	33;"	f
 drawArray	/home/alex800121/haskell/aoc/2016/src/MyLib.hs	254;"	f
 drawGraph	/home/alex800121/haskell/aoc/2016/src/MyLib.hs	282;"	f
@@ -200,6 +206,7 @@ initRect	/home/alex800121/haskell/aoc/2016/src/Day8.hs	15;"	f
 initReg	/home/alex800121/haskell/aoc/2016/src/Day12.hs	28;"	f
 input	/home/alex800121/haskell/aoc/2016/src/Day13.hs	8;"	f
 input	/home/alex800121/haskell/aoc/2016/src/Day14.hs	18;"	f
+input	/home/alex800121/haskell/aoc/2016/src/Day17.hs	21;"	f
 input	/home/alex800121/haskell/aoc/2016/src/Day5.hs	15;"	f
 ins	/home/alex800121/haskell/aoc/2016/src/Day12.hs	38;"	f
 intToBits	/home/alex800121/haskell/aoc/2016/src/MyLib.hs	237;"	f
@@ -223,6 +230,7 @@ main	/home/alex800121/haskell/aoc/2016/app/Main.hs	30;"	f
 makeIndices	/home/alex800121/haskell/aoc/2016/src/Day14.hs	30;"	f
 manhattan	/home/alex800121/haskell/aoc/2016/src/MyLib.hs	396;"	f
 mapFirst	/home/alex800121/haskell/aoc/2016/src/MyLib.hs	177;"	f
+mapRange	/home/alex800121/haskell/aoc/2016/src/Day17.hs	24;"	f
 moveFocus	/home/alex800121/haskell/aoc/2016/src/MyLib.hs	201;"	f
 mulParser	/home/alex800121/haskell/aoc/2016/src/Day9.hs	19;"	f
 name	/home/alex800121/haskell/aoc/2016/dist-newstyle/build/x86_64-linux/ghc-9.6.3/AOC2016-0.1.0.0/build/autogen/PackageInfo_AOC2016.hs	15;"	f
@@ -267,6 +275,7 @@ stablizedBy	/home/alex800121/haskell/aoc/2016/src/MyLib.hs	165;"	f
 start	/home/alex800121/haskell/aoc/2016/src/Day13.hs	30;"	f
 step	/home/alex800121/haskell/aoc/2016/src/Day10.hs	37;"	f
 step	/home/alex800121/haskell/aoc/2016/src/Day16.hs	11;"	f
+step	/home/alex800121/haskell/aoc/2016/src/Day17.hs	48;"	f
 subtractEucVec	/home/alex800121/haskell/aoc/2016/src/MyLib.hs	410;"	f
 subtractEucVecs	/home/alex800121/haskell/aoc/2016/src/MyLib.hs	419;"	f
 subtractEucVecs'	/home/alex800121/haskell/aoc/2016/src/MyLib.hs	416;"	f
@@ -295,4 +304,5 @@ version	/home/alex800121/haskell/aoc/2016/dist-newstyle/build/x86_64-linux/ghc-9
 version	/home/alex800121/haskell/aoc/2016/dist-newstyle/build/x86_64-linux/ghc-9.6.3/AOC2016-0.1.0.0/build/autogen/Paths_AOC2016.hs	35;"	f
 version	/home/alex800121/haskell/aoc/2016/dist-newstyle/build/x86_64-linux/ghc-9.6.3/AOC2016-0.1.0.0/x/AOC2023/build/AOC2023/autogen/PackageInfo_AOC2016.hs	17;"	f
 version	/home/alex800121/haskell/aoc/2016/dist-newstyle/build/x86_64-linux/ghc-9.6.3/AOC2016-0.1.0.0/x/AOC2023/build/AOC2023/autogen/Paths_AOC2016.hs	35;"	f
+withPath	/home/alex800121/haskell/aoc/2016/src/Day17.hs	32;"	f
 withPostfix	/home/alex800121/haskell/aoc/2016/src/Day14.hs	27;"	f
