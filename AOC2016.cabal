@@ -43,7 +43,8 @@ common shared
         cryptohash,
         cryptohash-md5,
         bytestring,
-        base16-bytestring
+        base16-bytestring,
+        wide-word
     default-extensions: TypeFamilies, OverloadedRecordDot, TypeApplications, DataKinds, LambdaCase
     ghc-options: -O2
 
