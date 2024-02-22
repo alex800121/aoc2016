@@ -39,6 +39,7 @@ Dec	/home/alex800121/haskell/aoc/2016/src/Day12.hs	16;"	C
 Direction	/home/alex800121/haskell/aoc/2016/src/MyLib.hs	84;"	t
 Disc	/home/alex800121/haskell/aoc/2016/src/Day15.hs	9;"	t
 East	/home/alex800121/haskell/aoc/2016/src/MyLib.hs	84;"	C
+ExRange	/home/alex800121/haskell/aoc/2016/src/Day20.hs	7;"	t
 Facility	/home/alex800121/haskell/aoc/2016/src/Day11.hs	26;"	t
 Facility'	/home/alex800121/haskell/aoc/2016/src/Day11.hs	32;"	t
 Floor	/home/alex800121/haskell/aoc/2016/src/Day11.hs	24;"	t
@@ -78,7 +79,6 @@ Paths_AOC2016	/home/alex800121/haskell/aoc/2016/dist-newstyle/build/x86_64-linux
 Pos	/home/alex800121/haskell/aoc/2016/src/Day1.hs	16;"	t
 Range	/home/alex800121/haskell/aoc/2016/src/Day11.hs	140;"	t
 Range	/home/alex800121/haskell/aoc/2016/src/Day17.hs	30;"	t
-Range	/home/alex800121/haskell/aoc/2016/src/Day20.hs	6;"	t
 Rect	/home/alex800121/haskell/aoc/2016/src/Day8.hs	11;"	t
 Reg	/home/alex800121/haskell/aoc/2016/src/Day12.hs	9;"	t
 S	/home/alex800121/haskell/aoc/2016/src/Day4.hs	8;"	t
@@ -150,7 +150,7 @@ day19	/home/alex800121/haskell/aoc/2016/src/Day19.hs	23;"	f
 day19a	/home/alex800121/haskell/aoc/2016/src/Day19.hs	12;"	f
 day19b	/home/alex800121/haskell/aoc/2016/src/Day19.hs	16;"	f
 day2	/home/alex800121/haskell/aoc/2016/src/Day2.hs	55;"	f
-day20	/home/alex800121/haskell/aoc/2016/src/Day20.hs	16;"	f
+day20	/home/alex800121/haskell/aoc/2016/src/Day20.hs	32;"	f
 day21	/home/alex800121/haskell/aoc/2016/src/Day21.hs	3;"	f
 day22	/home/alex800121/haskell/aoc/2016/src/Day22.hs	3;"	f
 day23	/home/alex800121/haskell/aoc/2016/src/Day23.hs	3;"	f
@@ -181,7 +181,7 @@ end	/home/alex800121/haskell/aoc/2016/src/Day13.hs	32;"	f
 extEuc	/home/alex800121/haskell/aoc/2016/src/MyLib.hs	469;"	f
 facilityParser	/home/alex800121/haskell/aoc/2016/src/Day11.hs	133;"	f
 factors	/home/alex800121/haskell/aoc/2016/src/MyLib.hs	316;"	f
-findLowest	/home/alex800121/haskell/aoc/2016/src/Day20.hs	8;"	f
+findLowest	/home/alex800121/haskell/aoc/2016/src/Day20.hs	9;"	f
 firstCycle	/home/alex800121/haskell/aoc/2016/src/MyLib.hs	131;"	f
 firstCycle'	/home/alex800121/haskell/aoc/2016/src/MyLib.hs	139;"	f
 firstRepeat	/home/alex800121/haskell/aoc/2016/src/MyLib.hs	125;"	f
@@ -258,6 +258,7 @@ makeIndices	/home/alex800121/haskell/aoc/2016/src/Day14.hs	30;"	f
 manhattan	/home/alex800121/haskell/aoc/2016/src/MyLib.hs	396;"	f
 mapFirst	/home/alex800121/haskell/aoc/2016/src/MyLib.hs	177;"	f
 mapRange	/home/alex800121/haskell/aoc/2016/src/Day17.hs	24;"	f
+mergeRange	/home/alex800121/haskell/aoc/2016/src/Day20.hs	18;"	f
 moveFocus	/home/alex800121/haskell/aoc/2016/src/MyLib.hs	201;"	f
 mulParser	/home/alex800121/haskell/aoc/2016/src/Day9.hs	19;"	f
 name	/home/alex800121/haskell/aoc/2016/dist-newstyle/build/x86_64-linux/ghc-9.6.3/AOC2016-0.1.0.0/build/autogen/PackageInfo_AOC2016.hs	15;"	f
@@ -288,6 +289,7 @@ printRect	/home/alex800121/haskell/aoc/2016/src/Day8.hs	18;"	f
 readArg	/home/alex800121/haskell/aoc/2016/src/Day12.hs	25;"	f
 readBot	/home/alex800121/haskell/aoc/2016/src/Day10.hs	29;"	f
 readDisc	/home/alex800121/haskell/aoc/2016/src/Day15.hs	38;"	f
+readInput	/home/alex800121/haskell/aoc/2016/src/Day20.hs	29;"	f
 readIns	/home/alex800121/haskell/aoc/2016/src/Day1.hs	28;"	f
 readIns	/home/alex800121/haskell/aoc/2016/src/Day12.hs	31;"	f
 readIns	/home/alex800121/haskell/aoc/2016/src/Day2.hs	40;"	f
