@@ -7,6 +7,7 @@ Bot	/home/alex800121/haskell/aoc/2016/src/Day10.hs	16;"	t
 Bots	/home/alex800121/haskell/aoc/2016/src/Day10.hs	14;"	t
 Branch	/home/alex800121/haskell/aoc/2016/src/MyLib.hs	68;"	C
 Chip	/home/alex800121/haskell/aoc/2016/src/Day11.hs	20;"	C
+Circle	/home/alex800121/haskell/aoc/2016/src/Day19.hs	10;"	t
 Cons	/home/alex800121/haskell/aoc/2016/src/MyLib.hs	337;"	C
 Cpy	/home/alex800121/haskell/aoc/2016/src/Day12.hs	14;"	C
 Day1	/home/alex800121/haskell/aoc/2016/src/Day1.hs	1;"	m
@@ -77,6 +78,7 @@ Paths_AOC2016	/home/alex800121/haskell/aoc/2016/dist-newstyle/build/x86_64-linux
 Pos	/home/alex800121/haskell/aoc/2016/src/Day1.hs	16;"	t
 Range	/home/alex800121/haskell/aoc/2016/src/Day11.hs	140;"	t
 Range	/home/alex800121/haskell/aoc/2016/src/Day17.hs	30;"	t
+Range	/home/alex800121/haskell/aoc/2016/src/Day20.hs	6;"	t
 Rect	/home/alex800121/haskell/aoc/2016/src/Day8.hs	11;"	t
 Reg	/home/alex800121/haskell/aoc/2016/src/Day12.hs	9;"	t
 S	/home/alex800121/haskell/aoc/2016/src/Day4.hs	8;"	t
@@ -144,9 +146,11 @@ day15	/home/alex800121/haskell/aoc/2016/src/Day15.hs	46;"	f
 day16	/home/alex800121/haskell/aoc/2016/src/Day16.hs	21;"	f
 day17	/home/alex800121/haskell/aoc/2016/src/Day17.hs	63;"	f
 day18	/home/alex800121/haskell/aoc/2016/src/Day18.hs	23;"	f
-day19	/home/alex800121/haskell/aoc/2016/src/Day19.hs	3;"	f
+day19	/home/alex800121/haskell/aoc/2016/src/Day19.hs	23;"	f
+day19a	/home/alex800121/haskell/aoc/2016/src/Day19.hs	12;"	f
+day19b	/home/alex800121/haskell/aoc/2016/src/Day19.hs	16;"	f
 day2	/home/alex800121/haskell/aoc/2016/src/Day2.hs	55;"	f
-day20	/home/alex800121/haskell/aoc/2016/src/Day20.hs	3;"	f
+day20	/home/alex800121/haskell/aoc/2016/src/Day20.hs	16;"	f
 day21	/home/alex800121/haskell/aoc/2016/src/Day21.hs	3;"	f
 day22	/home/alex800121/haskell/aoc/2016/src/Day22.hs	3;"	f
 day23	/home/alex800121/haskell/aoc/2016/src/Day23.hs	3;"	f
@@ -177,6 +181,7 @@ end	/home/alex800121/haskell/aoc/2016/src/Day13.hs	32;"	f
 extEuc	/home/alex800121/haskell/aoc/2016/src/MyLib.hs	469;"	f
 facilityParser	/home/alex800121/haskell/aoc/2016/src/Day11.hs	133;"	f
 factors	/home/alex800121/haskell/aoc/2016/src/MyLib.hs	316;"	f
+findLowest	/home/alex800121/haskell/aoc/2016/src/Day20.hs	8;"	f
 firstCycle	/home/alex800121/haskell/aoc/2016/src/MyLib.hs	131;"	f
 firstCycle'	/home/alex800121/haskell/aoc/2016/src/MyLib.hs	139;"	f
 firstRepeat	/home/alex800121/haskell/aoc/2016/src/MyLib.hs	125;"	f
@@ -220,9 +225,11 @@ homepage	/home/alex800121/haskell/aoc/2016/dist-newstyle/build/x86_64-linux/ghc-
 initInput	/home/alex800121/haskell/aoc/2016/src/Day16.hs	5;"	f
 initRect	/home/alex800121/haskell/aoc/2016/src/Day8.hs	15;"	f
 initReg	/home/alex800121/haskell/aoc/2016/src/Day12.hs	28;"	f
+initSeq	/home/alex800121/haskell/aoc/2016/src/Day19.hs	8;"	f
 input	/home/alex800121/haskell/aoc/2016/src/Day13.hs	8;"	f
 input	/home/alex800121/haskell/aoc/2016/src/Day14.hs	18;"	f
 input	/home/alex800121/haskell/aoc/2016/src/Day17.hs	21;"	f
+input	/home/alex800121/haskell/aoc/2016/src/Day19.hs	6;"	f
 input	/home/alex800121/haskell/aoc/2016/src/Day5.hs	15;"	f
 ins	/home/alex800121/haskell/aoc/2016/src/Day12.hs	38;"	f
 intToBits	/home/alex800121/haskell/aoc/2016/src/MyLib.hs	237;"	f
