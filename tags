@@ -151,7 +151,7 @@ day19a	/home/alex800121/haskell/aoc/2016/src/Day19.hs	12;"	f
 day19b	/home/alex800121/haskell/aoc/2016/src/Day19.hs	16;"	f
 day2	/home/alex800121/haskell/aoc/2016/src/Day2.hs	55;"	f
 day20	/home/alex800121/haskell/aoc/2016/src/Day20.hs	32;"	f
-day21	/home/alex800121/haskell/aoc/2016/src/Day21.hs	3;"	f
+day21	/home/alex800121/haskell/aoc/2016/src/Day21.hs	35;"	f
 day22	/home/alex800121/haskell/aoc/2016/src/Day22.hs	3;"	f
 day23	/home/alex800121/haskell/aoc/2016/src/Day23.hs	3;"	f
 day24	/home/alex800121/haskell/aoc/2016/src/Day24.hs	3;"	f
@@ -293,6 +293,7 @@ readInput	/home/alex800121/haskell/aoc/2016/src/Day20.hs	29;"	f
 readIns	/home/alex800121/haskell/aoc/2016/src/Day1.hs	28;"	f
 readIns	/home/alex800121/haskell/aoc/2016/src/Day12.hs	31;"	f
 readIns	/home/alex800121/haskell/aoc/2016/src/Day2.hs	40;"	f
+readIns	/home/alex800121/haskell/aoc/2016/src/Day21.hs	7;"	f
 readIns	/home/alex800121/haskell/aoc/2016/src/Day8.hs	20;"	f
 readReg	/home/alex800121/haskell/aoc/2016/src/Day12.hs	22;"	f
 readString	/home/alex800121/haskell/aoc/2016/src/Day4.hs	10;"	f
