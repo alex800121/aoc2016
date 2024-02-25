@@ -141,6 +141,7 @@ bindir	/home/alex800121/haskell/aoc/2016/dist-newstyle/build/x86_64-linux/ghc-9.
 buildMap	/home/alex800121/haskell/aoc/2016/src/Day24.hs	24;"	f
 buildPassword	/home/alex800121/haskell/aoc/2016/src/Day5.hs	20;"	f
 buildPassword'	/home/alex800121/haskell/aoc/2016/src/Day5.hs	26;"	f
+calcDistance	/home/alex800121/haskell/aoc/2016/src/Day24.hs	49;"	f
 calcHeu	/home/alex800121/haskell/aoc/2016/src/Day11.hs	166;"	f
 calcHeu'	/home/alex800121/haskell/aoc/2016/src/Day11.hs	64;"	f
 calcInput	/home/alex800121/haskell/aoc/2016/src/Day14.hs	36;"	f
@@ -150,6 +151,7 @@ calcOpen	/home/alex800121/haskell/aoc/2016/src/Day13.hs	12;"	f
 catchIO	/home/alex800121/haskell/aoc/2016/dist-newstyle/build/x86_64-linux/ghc-9.6.3/AOC2016-0.1.0.0/build/autogen/Paths_AOC2016.hs	25;"	f
 catchIO	/home/alex800121/haskell/aoc/2016/dist-newstyle/build/x86_64-linux/ghc-9.6.3/AOC2016-0.1.0.0/x/AOC2023/build/AOC2023/autogen/Paths_AOC2016.hs	25;"	f
 catchIO	/home/alex800121/haskell/aoc/2016/dist-newstyle/build/x86_64-linux/ghc-9.6.3/AOC2016-0.1.0.0/x/AOC2023/opt/build/AOC2023/autogen/Paths_AOC2016.hs	25;"	f
+check	/home/alex800121/haskell/aoc/2016/src/Day25.hs	6;"	f
 checkSum	/home/alex800121/haskell/aoc/2016/src/Day16.hs	14;"	f
 checkSum	/home/alex800121/haskell/aoc/2016/src/Day4.hs	18;"	f
 convert	/home/alex800121/haskell/aoc/2016/src/Day11.hs	36;"	f
@@ -178,8 +180,8 @@ day20	/home/alex800121/haskell/aoc/2016/src/Day20.hs	32;"	f
 day21	/home/alex800121/haskell/aoc/2016/src/Day21.hs	66;"	f
 day22	/home/alex800121/haskell/aoc/2016/src/Day22.hs	55;"	f
 day23	/home/alex800121/haskell/aoc/2016/src/Day23.hs	65;"	f
-day24	/home/alex800121/haskell/aoc/2016/src/Day24.hs	49;"	f
-day25	/home/alex800121/haskell/aoc/2016/src/Day25.hs	3;"	f
+day24	/home/alex800121/haskell/aoc/2016/src/Day24.hs	53;"	f
+day25	/home/alex800121/haskell/aoc/2016/src/Day25.hs	11;"	f
 day3	/home/alex800121/haskell/aoc/2016/src/Day3.hs	5;"	f
 day4	/home/alex800121/haskell/aoc/2016/src/Day4.hs	29;"	f
 day5	/home/alex800121/haskell/aoc/2016/src/Day5.hs	40;"	f
