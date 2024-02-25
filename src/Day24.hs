@@ -1,7 +1,7 @@
 module Day24 where
 
 import Data.Char (digitToInt, isDigit)
-import Data.List (partition, tails, uncons, permutations)
+import Data.List (partition, permutations, tails, uncons)
 import Data.Map (Map)
 import qualified Data.Map as Map
 import Data.Maybe (fromMaybe, mapMaybe)
@@ -46,10 +46,16 @@ adjacent = [(0, 1), (0, -1), (1, 0), (-1, 0)]
 getDistance :: Map Edge Int -> Edge -> Int
 getDistance m e = fromMaybe (m Map.! swap e) (m Map.!? e)
 
+calcDistance :: Map Edge Int -> [P] -> Int
+calcDistance m (x : y : xs) = getDistance m (x, y) + calcDistance m (y : xs)
+calcDistance _ _ = 0
+
 day24 :: IO ()
 day24 = do
   input <- drawMap (\case '.' -> Just Space; x | isDigit x -> Just $ Point (digitToInt x); _ -> Nothing) . lines <$> readFile "input/input24.txt"
   let p = mapMaybe (\(x, y) -> case y of Space -> Nothing; Point i -> Just (x, i)) $ Map.toList input
-      starts = mapMaybe uncons $ filter ((== 0) . snd . head) $ permutations p
+      starts = filter ((== 0) . snd . head) $ permutations p
       m = buildMap input
-  print m
+      starts' = zipWith (++) starts (map (take 1) starts)
+  print $ minimum $ map (calcDistance m) starts
+  print $ minimum $ map (calcDistance m) starts'
