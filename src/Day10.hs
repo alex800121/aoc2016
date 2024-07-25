@@ -2,6 +2,7 @@
 
 module Day10 where
 
+import Paths_AOC2016
 import Control.Lens
 import Control.Monad.Trans.State (state)
 import Data.Bifunctor (Bifunctor (..))
@@ -51,7 +52,7 @@ step (a, b) = IM.foldlWithKey' f (a, b) b
 day10 :: IO ()
 day10 = do
   -- input <- IM.unionsWith fuseBot . map readBot . lines <$> readFile "input/test10.txt"
-  input <- IM.unionsWith fuseBot . map readBot . lines <$> readFile "input/input10.txt"
+  input <- IM.unionsWith fuseBot . map readBot . lines <$> (getDataDir >>= readFile . (++ "/input/input10.txt"))
   let a = iterate step (IM.empty, input)
   print $ fmap (head . IM.keys) $ find (not . IM.null) $ map (IM.filter ((== [17, 61]) . sort . _chips) . snd) a
   print $ fmap (product . map head) $ join $ find isJust $ map (\(o, _) -> traverse (o IM.!?) [0, 1, 2]) a

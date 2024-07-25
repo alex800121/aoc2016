@@ -1,5 +1,6 @@
 module Day15 where
 
+import Paths_AOC2016
 import MyLib (emcd)
 import Data.List (foldl1')
 
@@ -45,7 +46,7 @@ pressTime (Disc a b c) = (b - c - a) `mod` b
 
 day15 :: IO ()
 day15 = do
-  input <- map readDisc . lines <$> readFile "input/input15.txt"
+  input <- map readDisc . lines <$> (getDataDir >>= readFile . (++ "/input/input15.txt"))
   -- print $ alignDisc (input !! 1) (head input)
   print $ pressTime $ foldr1 alignDisc input
   print $ pressTime $ foldr alignDisc (Disc (maximum (map _layer input) + 1) 11 0) input

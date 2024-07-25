@@ -1,5 +1,6 @@
 module Day4 where
 
+import Paths_AOC2016
 import Data.Char (chr, ord)
 import Data.Function (on)
 import Data.List
@@ -28,6 +29,6 @@ decrypt (s, i) = unwords $ map (map (decryptChar i)) s
 
 day4 :: IO ()
 day4 = do
-  input <- map readString . lines <$> readFile "input/input4.txt"
+  input <- map readString . lines <$> (getDataDir >>= readFile . (++ "/input/input4.txt"))
   print $ sum $ map (snd . fst) $ filter (uncurry checkSum) input
   print $ fmap fst $ find (("north" `isInfixOf`) . snd) $ map (((,) <$> snd <*> decrypt) . fst) input

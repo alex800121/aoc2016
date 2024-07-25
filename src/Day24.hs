@@ -1,5 +1,6 @@
 module Day24 where
 
+import Paths_AOC2016
 import Data.Char (digitToInt, isDigit)
 import Data.List (partition, permutations, tails, uncons)
 import Data.Map (Map)
@@ -52,7 +53,7 @@ calcDistance _ _ = 0
 
 day24 :: IO ()
 day24 = do
-  input <- drawMap (\case '.' -> Just Space; x | isDigit x -> Just $ Point (digitToInt x); _ -> Nothing) . lines <$> readFile "input/input24.txt"
+  input <- drawMap (\case '.' -> Just Space; x | isDigit x -> Just $ Point (digitToInt x); _ -> Nothing) . lines <$> (getDataDir >>= readFile . (++ "/input/input24.txt"))
   let p = mapMaybe (\(x, y) -> case y of Space -> Nothing; Point i -> Just (x, i)) $ Map.toList input
       starts = filter ((== 0) . snd . head) $ permutations p
       m = buildMap input

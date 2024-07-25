@@ -1,5 +1,6 @@
 module Day7 where
 
+import Paths_AOC2016
 import Data.Either
 import Data.List.Split (divvy)
 import Data.Maybe (mapMaybe)
@@ -32,7 +33,7 @@ hasABA (x, y) = any (`elem` as) bs
 
 day7 :: IO ()
 day7 = do
-  input <- mapMaybe (parseMaybe ipParser) . lines <$> readFile "input/input7.txt"
+  input <- mapMaybe (parseMaybe ipParser) . lines <$> (getDataDir >>= readFile . (++ "/input/input7.txt"))
   print
     . length
     $ filter ((&&) <$> (not . any hasABBA . fst) <*> (any hasABBA . snd)) input

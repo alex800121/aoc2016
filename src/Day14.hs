@@ -3,6 +3,7 @@
 
 module Day14 where
 
+import Paths_AOC2016
 import Data.Bifunctor (Bifunctor (..))
 import Data.ByteString (ByteString)
 import qualified Data.ByteString as B

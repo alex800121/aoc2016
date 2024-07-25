@@ -1,5 +1,6 @@
 module Day1 where
 
+import Paths_AOC2016
 import Data.Bifunctor (Bifunctor (..))
 import Data.Foldable (Foldable (..))
 import Data.Function (on)
@@ -37,7 +38,7 @@ allLoc (x : y : xs) = tail (f $ range (m, n)) <> allLoc (y : xs)
 
 day1 :: IO ()
 day1 = do
-  input <- map ((,) <$> head <*> read @Int . tail) . splitOn ", " <$> readFile "input/input1.txt"
+  input <- map ((,) <$> head <*> read @Int . tail) . splitOn ", " <$> (getDataDir >>= readFile . (++ "/input/input1.txt"))
   print
     . uncurry ((+) `on` abs)
     . snd

@@ -1,5 +1,6 @@
 module Day23 where
 
+import Paths_AOC2016
 import Data.Array.Unboxed
 import Data.Bifunctor (Bifunctor (..))
 import Data.Char (isAlpha, ord)
@@ -64,7 +65,7 @@ go (v, g) = maybe [(v, g)] (((v, g) :) . go . (`ins` (v, g))) (v V.!? fst g)
 
 day23 :: IO ()
 day23 = do
-  input <- V.fromList . map readIns . lines <$> readFile "input/input23.txt"
+  input <- V.fromList . map readIns . lines <$> (getDataDir >>= readFile . (++ "/input/input23.txt"))
   -- input <- V.fromList . map readIns . lines <$> readFile "input/test23.txt"
   -- print $ (! ord 'a') $ snd $ snd $ last $ go (input, (0, initReg // [(ord 'a', 7)]))
   print $ product [1..7] + (74 * 79)

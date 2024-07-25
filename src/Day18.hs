@@ -1,5 +1,6 @@
 module Day18 where
 
+import Paths_AOC2016
 import Data.Bits (Bits (..), testBit)
 import Data.Function (on)
 import Data.List (elemIndices, findIndices)
@@ -22,7 +23,7 @@ step i s = sl `xor` sr
 
 day18 :: IO ()
 day18 = do
-  input <- init <$> readFile "input/input18.txt"
+  input <- init <$> (getDataDir >>= readFile . (++ "/input/input18.txt"))
   let l = iterate (step 100) $ fromS input
   print $ sum $ map ((100 -) . popCount) $ take 40 l
   print $ sum $ map ((100 -) . popCount) $ take 400000 l

@@ -3,6 +3,7 @@
 
 module Day17 where
 
+import Paths_AOC2016
 import Data.ByteString (ByteString)
 import qualified Data.ByteString as B
 import Data.ByteString.Base16 (encode)
@@ -62,7 +63,7 @@ bfs b input end start acc
 
 day17 :: IO ()
 day17 = do
-  -- input <- readFile "input/input17.txt"
+  -- input <- (getDataDir >>= readFile . (++ "/input/input17.txt"))
   let a = bfs mapRange input (3, 3) (Set.singleton ((0, 0), "")) Set.empty
   C.putStrLn $ minimumBy (compare `on` B.length) a
   print $ maximum $ Set.map B.length a

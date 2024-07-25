@@ -1,5 +1,6 @@
 module Day2 where
 
+import Paths_AOC2016
 import Data.Array.Unboxed
 import Data.List
 import MyLib
@@ -54,6 +55,6 @@ fromChar 'R' = East
 
 day2 :: IO ()
 day2 = do
-  input <- map (map fromChar) . lines <$> readFile "input/input2.txt"
+  input <- map (map fromChar) . lines <$> (getDataDir >>= readFile . (++ "/input/input2.txt"))
   putStrLn $ map (pad !) $ tail $ scanl' (foldl' (flip (readIns pad))) (1, 1) input
   putStrLn $ map (pad' !) $ tail $ scanl' (foldl' (flip (readIns pad'))) (2, 2) input

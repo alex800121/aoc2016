@@ -1,5 +1,6 @@
 module Day20 where
 
+import Paths_AOC2016
 import Data.List (sort)
 import Data.List.Split
 import Data.Word (Word64, Word32)
@@ -31,6 +32,6 @@ readInput s | [x, y] <- splitOn "-" s = (read x, read y + 1)
 
 day20 :: IO ()
 day20 = do
-  input <- map readInput . lines <$> readFile "input/input20.txt"
+  input <- map readInput . lines <$> (getDataDir >>= readFile . (++ "/input/input20.txt"))
   print $ findLowest minBound input
   print $ ((fromIntegral (maxBound @Word32) + 1) -) $ sum $ map (uncurry subtract) $ mergeRange input

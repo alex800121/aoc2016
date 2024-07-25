@@ -1,5 +1,6 @@
 module Day9 where
 
+import Paths_AOC2016
 import Control.Monad ((>=>))
 import Data.Char (isUpper)
 import MyLib (Parser, signedInteger)
@@ -35,7 +36,7 @@ calcLength (Mul n s) = n * sum (map calcLength s)
 
 day9 :: IO ()
 day9 = do
-  input <- init <$> readFile "input/input9.txt"
+  input <- init <$> (getDataDir >>= readFile . (++ "/input/input9.txt"))
   let a = parseMaybe (many (nstringParser (Sin <$> anySingle))) input
       b = parseMaybe (many (nstringParser (fix nstringParser))) input
   print $ fmap (sum . map calcLength) a

@@ -1,5 +1,6 @@
 module Day8 where
 
+import Paths_AOC2016
 import Data.Array
 import Data.List.Split (splitOn)
 import qualified Data.Map.Strict as Map
@@ -40,7 +41,7 @@ readIns s r = case words s of
 
 day8 :: IO ()
 day8 = do
-  input <- lines <$> readFile "input/input8.txt"
+  input <- lines <$> (getDataDir >>= readFile . (++ "/input/input8.txt"))
   let a = printRect $ foldl' (flip readIns) initRect input
   print $ length $ filter (== '#') a
   putStrLn a

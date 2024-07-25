@@ -1,5 +1,6 @@
 module Day21 where
 
+import Paths_AOC2016
 import Data.Foldable (Foldable (..))
 import Data.List (scanl')
 import Data.Sequence (Seq (..))
@@ -65,7 +66,7 @@ readIns ins s = case words ins of
 
 day21 :: IO ()
 day21 = do
-  input <- lines <$> readFile "input/input21.txt"
+  input <- lines <$> (getDataDir >>= readFile . (++ "/input/input21.txt"))
   let a =  foldl' (flip readIns) (Seq.fromList "abcdefgh") input
   print a
   print $ foldr revIns (Seq.fromList "fbgdceah") input
