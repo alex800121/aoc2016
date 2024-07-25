@@ -87,7 +87,7 @@ library
     hs-source-dirs:   src, app
 
 
-executable AOC2023
+executable AOC2016
     import: shared
 
     main-is:          Main.hs
