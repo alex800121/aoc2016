@@ -1,5 +1,6 @@
 module Day13 where
 
+import Paths_AOC2016
 import Data.Bits (popCount)
 import Data.Set (Set)
 import qualified Data.Set as Set
@@ -33,6 +34,6 @@ end = (31, 39)
 
 day13 :: IO ()
 day13 = do
-  -- input <- readFile "input/input13.txt"
+  -- input <- (getDataDir >>= readFile . (++ "/input/input13.txt"))
   print $ fst $ bfs 0 (const (== end)) (nextF input) Set.empty (Set.singleton start)
   print $ length $ snd $ bfs 0 (\x _ -> x == 50) (nextF input) Set.empty (Set.singleton start)

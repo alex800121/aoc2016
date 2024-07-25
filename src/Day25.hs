@@ -1,5 +1,6 @@
 module Day25 where
 
+import Paths_AOC2016
 import Numeric (showBin)
 import Data.List (find)
 
@@ -10,5 +11,5 @@ check _ = False
 
 day25 :: IO ()
 day25 = do
-  -- input <- readFile "input/input25.txt"
+  -- input <- (getDataDir >>= readFile . (++ "/input/input25.txt"))
   print $ find (check . (`showBin` "") . (+ (182 * 14))) [0..]

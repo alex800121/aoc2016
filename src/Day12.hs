@@ -1,5 +1,6 @@
 module Day12 where
 
+import Paths_AOC2016
 import Data.Array.Unboxed
 import Data.Bifunctor (Bifunctor (..))
 import Data.Char (isAlpha, ord)
@@ -46,6 +47,6 @@ go v g = maybe g (go v . (`ins` g)) (v V.!? fst g)
 
 day12 :: IO ()
 day12 = do
-  input <- V.fromList . map readIns . lines <$> readFile "input/input12.txt"
+  input <- V.fromList . map readIns . lines <$> (getDataDir >>= readFile . (++ "/input/input12.txt"))
   print $ go input (0, initReg)
   print $ go input (0, initReg // [(ord 'c', 1)])

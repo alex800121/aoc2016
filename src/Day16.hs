@@ -1,4 +1,5 @@
 module Day16 where
+import Paths_AOC2016
 import Data.List (find)
 import Debug.Trace
 
@@ -20,7 +21,7 @@ checkSum xs = f id xs
 
 day16 :: IO ()
 day16 = do
-  -- input <- readFile "input/input16.txt"
+  -- input <- (getDataDir >>= readFile . (++ "/input/input16.txt"))
   -- print initInput
   print
     . fmap (map (\x -> if x then '1' else '0') . checkSum . take l)
