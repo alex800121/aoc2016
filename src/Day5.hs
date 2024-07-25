@@ -2,6 +2,7 @@
 
 module Day5 where
 
+import Paths_AOC2016
 import Data.ByteString (ByteString)
 import qualified Data.ByteString as B
 import Data.String (IsString (..))

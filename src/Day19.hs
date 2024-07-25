@@ -1,5 +1,6 @@
 module Day19 where
 
+import Paths_AOC2016
 import Data.Sequence (Seq (..), (|>))
 import qualified Data.Sequence as Seq
 
@@ -22,7 +23,7 @@ day19b (x :<| xs) = day19b (xs' |> x)
 
 day19 :: IO ()
 day19 = do
-  -- input <- readFile "input/input19.txt"
+  -- input <- (getDataDir >>= readFile . (++ "/input/input19.txt"))
   -- print $ day19b (Seq.fromList [1 .. 5])
   print $ day19a initSeq
   print $ day19b initSeq

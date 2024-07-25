@@ -1,5 +1,6 @@
 module Day11 where
 
+import Paths_AOC2016
 import Control.Monad (guard)
 import Data.Array.IArray (Array)
 import qualified Data.Array.IArray as A
@@ -183,7 +184,7 @@ aStar b f visited ((heuN, (g, n)) :< qs)
 
 day11 :: IO ()
 day11 = do
-  Just input <- parseMaybe facilityParser <$> readFile "input/input11.txt"
+  Just input <- parseMaybe facilityParser <$> (getDataDir >>= readFile . (++ "/input/input11.txt"))
   -- Just input <- parseMaybe facilityParser <$> readFile "input/test11.txt"
   let b = A.bounds input
       initState = (1, input)
