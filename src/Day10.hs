@@ -1,9 +1,6 @@
-{-# LANGUAGE TemplateHaskell #-}
-
 module Day10 where
 
 import Paths_AOC2016
-import Control.Lens
 import Control.Monad.Trans.State (state)
 import Data.Bifunctor (Bifunctor (..))
 import Data.IntMap (IntMap)
@@ -21,7 +18,6 @@ data Bot = Bot
   }
   deriving (Show, Ord, Eq)
 
--- makeLenses ''Bot
 fuseBot :: Bot -> Bot -> Bot
 fuseBot (Bot c l h) (Bot c' l' h') = Bot (c <> c') (max l l') (max h h')
 
